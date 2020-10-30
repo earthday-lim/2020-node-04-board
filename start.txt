@@ -1,0 +1,11 @@
+폴더만들고
+npm i -y
+npm i express dotenv pug
+
+git init
+git 복붙
+
+f1 - add gitignore
+   - node
+f1 - add gitignore
+   - visualStudio > append
