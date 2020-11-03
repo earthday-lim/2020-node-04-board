@@ -40,4 +40,21 @@ router.post('/save', async (req, res, next) => {
   }
 });
 
+router.get('/view/:id', async (req, res, next) => { //':id' 시멘틱 방식으로 들어옴 -> 'params'로 받음
+  try {
+    const pug = {title: '게시글 보기', jsFile: 'board', cssFile: 'board'};
+    const sql = "SELECT * FROM board WHERE id=?";
+    const values = [req.params.id];
+    const connect = await pool.getConnection();
+    const result = await connect.query(sql, values);
+    //res.json(result); 항상 디버깅모드에서 배열의 몇번째로 데이터가 들어오는지 확인하는 것
+    connect.release();
+    pug.list = result[0][0]; //list라는 배열객체 만듦
+    pug.list.wdate = moment(pug.list.wdate).format('YYYY-MM-DD'); //moment : https://momentjs.com/
+    res.render('./board/view.pug', pug);
+  }catch(e){
+    next(e);
+  }
+});
+
 module.exports = router;
