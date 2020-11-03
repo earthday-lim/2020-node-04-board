@@ -2,6 +2,7 @@ const express = require('express');
 const moment = require('moment');
 const router = express.Router();
 const {pool} = require('../modules/mysql-conn');
+const {alert} = require('../modules/util');
 
 router.get(['/', '/list'], async (req, res, next) => {
   const pug = {title: '게시판 리스트', jsFile: 'board', cssFile: 'board'};
@@ -52,6 +53,51 @@ router.get('/view/:id', async (req, res, next) => { //':id' 시멘틱 방식으�
     pug.list = result[0][0]; //list라는 배열객체 만듦
     pug.list.wdate = moment(pug.list.wdate).format('YYYY-MM-DD'); //moment : https://momentjs.com/
     res.render('./board/view.pug', pug);
+  }catch(e){
+    next(e);
+  }
+});
+
+router.get('/delete/:id', async (req, res, next) => {
+  try {
+    const sql = 'DELETE FROM board WHERE id=?';
+    const values = [req.params.id];
+    const connect = await pool.getConnection();
+    const result = await connect.query(sql, values);
+    res.send(alert('삭제되었습니다.', '/board'));
+    //connect.release();
+    //res.redirect('/board');
+  }catch(e){
+    next(e);
+  }
+});
+
+
+router.get('/update/:id', async (req, res, next) => {
+  try {
+    const pug = {title: '게시글 수정', jsFile: 'board', cssFile: 'board'};
+    const sql = "SELECT * FROM board WHERE id=?";
+    const values = [req.params.id];
+    const connect = await pool.getConnection();
+    const result = await connect.query(sql, values);
+    //res.json(result); 항상 디버깅모드에서 배열의 몇번째로 데이터가 들어오는지 확인하는 것
+    connect.release();
+    pug.list = result[0][0]; //list라는 배열객체 만듦
+    res.render('./board/write.pug', pug);
+  }catch(e){
+    next(e);
+  }
+});
+
+router.post('/saveUpdate', async (req, res, next) => {
+  const {id, title, writer, content} = req.body; //구조분해 할당, req.body로부터
+  try {
+    const sql = "UPDATE board SET title=?, writer=?, content=? WHERE id=?";
+    const values = [title, writer, content, id];
+    const connect = await pool.getConnection();
+    const result = await connect.query(sql, values);
+    if(result[0].affectedRows == 1) res.send(alert('수정되었습니다.', '/board'));
+    else res.send(alert('수정에 실패하였습니다.', '/board'));
   }catch(e){
     next(e);
   }
