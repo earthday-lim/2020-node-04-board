@@ -15,12 +15,12 @@ router.get('/write', (req, res, next) => {
 router.post('/save', async (req, res, next) => {
   const {title, content, writer} = req.body; //비구조화 할당
   var values = [title, content, writer];
-  var sql = 'INSERT INTO board SET title=?, writer=?, content=?';
+  var sql = 'INSERT INTO board SET title=?, content=?, writer=?';
   try {
     const connect = await pool.getConnection();
     const result = await connect.query(sql, values);
     connect.release();
-    res.json(result);
+    res.redirect('/board');
   }catch(e){
     next(e);
   }

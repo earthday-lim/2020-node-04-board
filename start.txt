@@ -9,3 +9,8 @@ f1 - add gitignore
    - node
 f1 - add gitignore
    - visualStudio > append
+
+
+Debug
+vscode에서 메뉴 4번째꺼 > create json launch 뭐시기 클릭 > node.js > debug뜸
+하단에 add configuration 클릭 후 기존 configurations 내용 지우고 nodemon 으로 다시 깔기

@@ -1,4 +1,22 @@
 extends ../layout/default.pug
 block content
-  h1 LIST
-  button.btn.btn-primary(onclick="location.href='/board/write';") 작성하기
+  .container
+    .jumbotron.my-2
+      h1 리스트페이지
+      button.btn.btn-primary(onclick="location.href='/board/write';") 작성하기
+    table.table.table-bordered.text-center
+      thead.thead-dark
+        tr
+          th 번호
+          th 제목
+          th 작성자
+          th 내용
+          th 작성일
+      tbody
+        tr
+          td 1
+          td.text-left 자기소개
+          td 글쓴이
+          td 안녕하세요.
+          td 2020-02-15
+
