@@ -13,10 +13,12 @@ block content
           th 내용
           th 작성일
       tbody
-        tr
-          td 1
-          td.text-left 자기소개
-          td 글쓴이
-          td 안녕하세요.
-          td 2020-02-15
+        //- 데이터 받아오려면 필요한 each in문 
+        each v in lists 
+          tr
+            td= v.id
+            td.text-left= v.title
+            td= v.writer
+            td.text-left= v.content
+            td= v.wdate
 

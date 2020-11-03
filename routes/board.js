@@ -1,10 +1,24 @@
 const express = require('express');
+const moment = require('moment');
 const router = express.Router();
 const {pool} = require('../modules/mysql-conn');
 
-router.get(['/', '/list'], (req, res, next) => {
-  const pug = {title: '게시판 리스트', jsFile: 'board', cssFile: 'board'}
-  res.render('./board/list.pug', pug);
+router.get(['/', '/list'], async (req, res, next) => {
+  const pug = {title: '게시판 리스트', jsFile: 'board', cssFile: 'board'};
+  //node 데이터 가져오기 async await가 있어야 함
+  try {
+    var sql = 'SELECT * FROM board ORDER BY id DESC';
+    const connect = await pool.getConnection();
+    const result = await connect.query(sql);
+    pug.lists = result[0];
+    pug.lists.forEach((v) => { //forEach문 말고 map을 써도 됨
+      v.wdate = moment(v.wdate).format('YYYY-MM-DD');
+    });
+    connect.release();
+    res.render('./board/list.pug', pug);
+  }catch(e){
+    next(e);
+  }
 });
 
 router.get('/write', (req, res, next) => {
