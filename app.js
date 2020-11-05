@@ -3,9 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const app = express();
 const path = require('path');
-const multer = require('multer');
-const upload = multer({ dest: path.join(__dirname, './uploads/') }); //req를 지난 다음에 실행해야 req를 인식할 수 있음
-const { v4: uuidv4 } = require('uuid'); //unique한 key값을 받아오는 모듈
+const { upload } = require('./modules/multer-conn');
 
 /* modules */
 //const { pool } = require('./modules/mysql-conn');
@@ -29,6 +27,7 @@ app.use(logger, express.json(), express.urlencoded({extended: false}));
 
 /* router */
 app.use('/', express.static(path.join(__dirname, './public')));//절대경로를 줄 땐 path.join()
+app.use('/storage', express.static(path.join(__dirname, './uploads')));
 app.use('/board', boardRouter);
 app.use('/gallery', galleryRouter);
 /* app.get('/err', (req, res, next) => {
