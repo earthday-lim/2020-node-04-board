@@ -17,3 +17,5 @@ vscode에서 메뉴 4번째꺼 > create json launch 뭐시기 클릭 > node.js >
 
 sendStream.error : send 보낸다 stream 쪼개서 => 파일의 누락이 있을 때 뜨는 에러
 statError : 상태 에러
+
+logger : 어떤 사람이 내 서버에 들어왔다 나갔다는 정보들을 담은 곳
