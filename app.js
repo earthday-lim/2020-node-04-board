@@ -35,7 +35,7 @@ app.use('/gallery', galleryRouter);
   next(err); //젤 마지막 app.use()로 보냄
 }); */
 app.get('/test/upload', (req, res, next) => { ///test/upload로 요청이 들어온다면, req,res,next로 가서
-  res.render('test/upload'); //test/upload.pug를 열고 html로 해석해서 브라우저에 보여라
+  res.render('test/upload'); //test/upload.pug를 열고 html로 해석해서 브라우저에 띄워라
 });
 
 app.post('/test/save', upload.single('upfile'), (req, res, next) => {
