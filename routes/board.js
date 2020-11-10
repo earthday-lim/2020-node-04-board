@@ -1,8 +1,10 @@
 const express = require('express');
 const moment = require('moment');
+const path = require('path');
 const router = express.Router();
 const {pool} = require('../modules/mysql-conn');
 const {alert} = require('../modules/util');
+const {upload, allowExt, imageExt} = require('../modules/multer-conn')
 
 router.get(['/', '/list'], async (req, res, next) => {
   const pug = {title: '게시판 리스트', jsFile: 'board', cssFile: 'board'};
@@ -27,10 +29,21 @@ router.get('/write', (req, res, next) => {
   res.render('./board/write.pug', pug);
 });
 
-router.post('/save', async (req, res, next) => {
+router.post('/save', upload.single('upfile'), async (req, res, next) => { //upload.single('upfile'), : 미들웨어
   const {title, content, writer} = req.body; //비구조화 할당
-  var values = [title, content, writer];
-  var sql = 'INSERT INTO board SET title=?, content=?, writer=?';
+  const values = [title, content, writer];
+  const sql = 'INSERT INTO board SET title=?, content=?, writer=?';
+
+  if(req.allowUpload){
+    if(req.allowUpload.allow) {//file 올렸다 통과해서 업로드 성공
+      sql += ', savefile=?, realfile=?';
+      values.push(req.file.filename); //savefile의 value
+      values.push(req.file.originalname); //reafile의 value
+    }else{ //file 올리지 않았다
+      res.send(alert(`${req.allowUpload.ext}은(는) 업로드 가능한 파일형식이 아닙니다.`, '/board'));
+    }
+  }
+
   try {
     const connect = await pool.getConnection();
     const result = await connect.query(sql, values);
@@ -52,6 +65,13 @@ router.get('/view/:id', async (req, res, next) => { //':id' 시멘틱 방식으�
     connect.release();
     pug.list = result[0][0]; //list라는 배열객체 만듦
     pug.list.wdate = moment(pug.list.wdate).format('YYYY-MM-DD'); //moment : https://momentjs.com/
+    if(pug.list.savefile) { //pug에 list에 savefile이 존재한다면
+      var ext = path.extname(pug.list.savefile).toLowerCase().replace(".", "");
+      if(imageExt.indexOf(ext) > -1) { //있다면
+        pug.list.imgSrc = `/storage/${pug.list.savefile.substr(0, 6)}/${pug.list.savefile}`;//storage/폴더명/파일명
+      }
+      pug.list.download = `/storage/${pug.list.savefile.substr(0, 6)}/${pug.list.savefile}`;//storage/폴더명/파일명
+    }
     res.render('./board/view.pug', pug);
   }catch(e){
     next(e);

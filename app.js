@@ -21,9 +21,13 @@ app.locals.pretty = true; //client한테 보내줄 때 정리 잘 해서 보내�
 
 /* middleware */
 //=> (req, res, next)를 갖고 있는 애들 : req가 모든 정보를 갖고 있고 내가 할 일 하고 next로 내보내주는 애들
-app.use(logger, express.json(), express.urlencoded({extended: false}));
-// app.use(express.json());
-// app.use(express.urlencoded({extended: false}));
+//app.use(logger, express.json(), express.urlencoded({extended: false}));
+app.use(logger);
+app.unsubscribe((req, res, next) => {
+  express.json()(req, res, json); //express.json()이 미들웨어를 (req, res, json)여기서 실행한다는 뜻
+});
+//app.use(express.json());
+app.use(express.urlencoded({extended: false}));
 
 /* router */
 app.use('/', express.static(path.join(__dirname, './public')));//절대경로를 줄 땐 path.join()
@@ -39,8 +43,10 @@ app.get('/test/upload', (req, res, next) => { ///test/upload로 요청이 들어
 });
 
 app.post('/test/save', upload.single('upfile'), (req, res, next) => {
-  const { title, upfile } = req.body;
-  res.redirect('/board');
+  // const { title, upfile } = req.body;
+  // res.redirect('/board');
+  // res.json(req.allowUpload);
+  res.json(req.file);
 });
 
 /* error 평범한 에러 */
