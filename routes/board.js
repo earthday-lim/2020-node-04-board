@@ -32,7 +32,7 @@ router.get('/write', (req, res, next) => {
 router.post('/save', upload.single('upfile'), async (req, res, next) => { //upload.single('upfile'), : 미들웨어
   const {title, content, writer} = req.body; //비구조화 할당
   const values = [title, content, writer];
-  const sql = 'INSERT INTO board SET title=?, content=?, writer=?';
+  var sql = 'INSERT INTO board SET title=?, content=?, writer=?';
 
   if(req.allowUpload){
     if(req.allowUpload.allow) {//file 올렸다 통과해서 업로드 성공
