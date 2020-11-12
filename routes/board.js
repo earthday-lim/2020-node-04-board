@@ -12,7 +12,7 @@ router.get(['/', '/list'], async (req, res, next) => {
   pug = {title: '게시판 리스트', jsFile: 'board', cssFile: 'board'};
   //node 데이터 가져오기 async await가 있어야 함
   try {
-    sql = 'SELEC * FROM board ORDER BY id DESC';
+    sql = 'SELECT * FROM board ORDER BY id DESC';
     connect = await pool.getConnection();
     result = await connect.query(sql);
     pug.lists = result[0];
