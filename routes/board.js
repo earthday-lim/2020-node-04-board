@@ -74,7 +74,7 @@ router.get('/view/:id', async (req, res, next) => { //':id' 시멘틱 방식으�
 		//res.json(result); 항상 디버깅모드에서 배열의 몇번째로 데이터가 들어오는지 확인하는 것
 		connect.release();
 		pug.list = result[0][0]; //list라는 배열객체 만듦
-		pug.list.wdate = moment(pug.list.wdate).format('YYYY-MM-DD'); //moment : https://momentjs.com/
+		pug.list.wdate = moment(pug.list.wdate).format('YYYY-MM-DD'); //moment : https://momentjs.com/ 
 		if(pug.list.savefile) { //pug에 list에 savefile이 존재한다면
 			var ext = path.extname(pug.list.savefile).toLowerCase().replace(".", "");
 			if(imageExt.indexOf(ext) > -1) { //있다면
