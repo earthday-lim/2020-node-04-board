@@ -55,7 +55,7 @@ var storage = multer.diskStorage({
 		cb(null, saveName);
 	}
 });
- 
+
 const upload = multer({ storage, fileFilter, limits: {fileSize: 20480000} }); //내가 customize한 경로와 파일명을 저장
 
 module.exports = { upload, imageExt, allowExt }; //customize를 해서 보내는 upload
