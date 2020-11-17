@@ -7,6 +7,7 @@ const router = express.Router();
 const { pool, sqlGen } = require('../modules/mysql-conn');
 const { alert, uploadFolder, imgFolder, extGen } = require('../modules/util');
 const { upload, imageExt } = require('../modules/multer-conn');
+const pager = require('../modules/pager-conn');
 
 router.get(['/', '/list'], async (req, res, next) => {
 	let connect, result, pug;
@@ -44,7 +45,7 @@ router.post('/save', upload.single('upfile'), async (req, res, next) => { //uplo
 		if(req.allowUpload.allow === false)
 			res.send(alert(`${req.allowUpload.ext}은(는) 업로드 가능한 파일형식이 아닙니다.`, '/board'));
 		else {
-			let temp = sqlGen('board', {
+			rs = await sqlGen('board', {
 			mode: 'I', 
 			field: ['title', 'writer', 'content'],
 			data: req.body,
@@ -63,9 +64,6 @@ router.post('/save', upload.single('upfile'), async (req, res, next) => { //uplo
 				
 			}
 		} */
-			connect = await pool.getConnection();
-			result = await connect.query(temp.sql, temp.values);
-			connect.release();
 			res.redirect('/board');
 		}
 	}catch(e){
@@ -81,14 +79,12 @@ router.get('/view/:id', async (req, res, next) => { //':id' 시멘틱 방식으�
 		pug = {title: '게시글 보기', jsFile: 'board', cssFile: 'board'};
 		// sql = "SELECT * FROM board WHERE id=?";
 		// values = [req.params.id];
-		let temp = sqlGen('board', {
+		rs = await sqlGen('board', {
 			mode: 'S',
 			id: req.params.id,
 		});
-		connect = await pool.getConnection();
-		result = await connect.query(temp.sql); //values가 id하나이므로 굳이 필요없음
+		//result = await connect.query(temp.sql); //values가 id하나이므로 굳이 필요없음
 		//res.json(result); 항상 디버깅모드에서 배열의 몇번째로 데이터가 들어오는지 확인하는 것
-		connect.release();
 		pug.list = result[0][0]; //list라는 배열객체 만듦
 		pug.list.wdate = moment(pug.list.wdate).format('YYYY-MM-DD'); //moment : https://momentjs.com/ 
 		if(pug.list.savefile) { //pug에 list에 savefile이 존재한다면

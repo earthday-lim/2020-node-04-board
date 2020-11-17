@@ -16,13 +16,13 @@ const pool = mysql.createPool({
 //data = {title: 'A', content: 'B'} // req.body
 //file = {filename: '201113-.jpg', originalname: 'abc.jpg', size: 1234} //req.file
 //key = id값 
-const sqlGen = (table, obj) => {
+const sqlGen = async (table, obj) => {
   let {mode=null, field=[], data={}, file=null, id=null, desc=null } = obj;
-  let sql=null, values=[];
+  let sql=null, values=[], connect= null, rs= null;//undefined : 기본값 false, 숫자계산 불가 vs null : 기본값 0
   let temp = object.entries(data).filter(v => field.includes(v[0])); //includes() = indexOf() > -1
   console.log(temp);
   
-  switch(mode) {
+  switch (mode) {
     case 'I':
       sql = `INSERT INTO ${table} SET `;  
     break;
@@ -48,9 +48,11 @@ const sqlGen = (table, obj) => {
     values.push(originalname);
   }
   sql = sql.substr(0, sql.length, -1); //마지막에 쉼표 빼는 것 땜에 한칸 지움처리
-
-  if(mode == 'I', mode == 'U') sql += `WHERE id= ${id}`
-  return {sql, values}
+  if(mode == 'I', mode == 'U') sql += `WHERE id= ${id}`;
+  connect = await pool.getConnection();
+  rs = await connect.query(sql, values);
+  connect.release();
+  return rs;
 }
 
 module.exports = {mysql, pool, sqlGen};
