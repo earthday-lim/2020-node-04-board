@@ -1,19 +1,35 @@
 .pagination.my-5.justify-content-center
   .page-item
-    a.page-link(href=``)
+    a.page-link(href=`/board/list/${firstPage}`)
       i.fa.fa-angle-double-left
-  .page-item
-    a.page-link(href=``)
-      i.fa.fa-angle-left
-  .page-item.active
-    a.page-link(href=``) 1
-  .page-item
-    a.page-link(href=``) 2
-  .page-item
-    a.page-link(href=``) 3
-  .page-item
-    a.page-link(href=``)
-      i.fa.fa-angle-right
-  .page-item
-    a.page-link(href=``)
-      i.fa.fa-angle-double-right
+  if prevPage == 0
+    .page-item.disabled
+      a.page-link(href=`#`)
+        i.fa.fa-angle-left
+  else
+    .page-item
+      a.page-link(href=`/board/list/${prevPage}`)
+        i.fa.fa-angle-left
+  - for(let i = startPage; i<= endPage, i++)
+    if i == page
+      .page-item.active
+        a.page-link(href=`/board/list/${i}`) i
+    else
+      .page-item
+        a.page-link(href=`/board/list/${i}`) i
+  if nextPage = 0
+    .page-item.disabled
+      a.page-link(href=`#`)
+        i.fa.fa-angle-right
+  else
+    .page-item
+      a.page-link(href=`/board/list/${nextPage}`)
+        i.fa.fa-angle-right
+  if totalPage = page
+    .page-item.disabled
+      a.page-link(href=`#`)
+        i.fa.fa-angle-double-right
+  else
+    .page-item
+      a.page-link(href=`/board/list/${totalPage}`)
+        i.fa.fa-angle-double-right
