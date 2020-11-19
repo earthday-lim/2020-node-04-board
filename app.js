@@ -11,6 +11,7 @@ const { upload } = require('./modules/multer-conn');
 const logger = require('./modules/morgan-conn');
 const boardRouter = require('./routes/board');
 const galleryRouter = require('./routes/gallery');
+const userRouter = require('./routes/user');
 
 /* 서버 구동 */
 app.listen(process.env.PORT, () => {console.log(`http://127.0.0.1:${process.env.PORT}`);}); //콜백없어도 됨
@@ -35,6 +36,7 @@ app.use('/', express.static(path.join(__dirname, './public')));//절대경로를
 app.use('/storage', express.static(path.join(__dirname, './uploads')));
 app.use('/board', boardRouter);
 app.use('/gallery', galleryRouter);
+app.use('/user', userRouter);
 /* app.get('/err', (req, res, next) => {
   const err = new Error();
   next(err); //젤 마지막 app.use()로 보냄

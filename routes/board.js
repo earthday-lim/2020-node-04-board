@@ -217,7 +217,7 @@ router.get('/fileRemove/:id', async (req, res, next) => {
 				connect.release();
 				res.json({code: 200}); //api통신할 때는 next로 에러를 보내는 게 아니다 클라이언트로 보내줘야 한다
 			}catch(e){
-				res.json({code: 500, err: e});
+				res.json({code: 500, err: e}); //ajax
 			}
 		};
 	}catch(e){

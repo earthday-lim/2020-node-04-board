@@ -1,0 +1,24 @@
+extends ../layout/default.pug
+block content
+  .container
+    .jumbotron.my-2
+      h1= title
+      hr
+      p 회원가입하려면 아래의 버튼을 클릭하세요.
+      button.btn.btn-info(onclick="location.href='/user/join';") 회원가입
+      //- 로그인트렌드 : joi(npm 검색&booldook깃헙 퍼블반 꺼 참고) - ajax로 폼의 정보를 검증하는 애 
+    form(name="loginForm" method="psot" onsubmit="return onLogin(this);" action = "/user/logon")
+      input(type="hidden" name="useridValid" value="")
+      table.table.my-5.tb-join.border-bottom
+        tbody
+          tr
+            td.title 아이디
+            td.content
+              input.form-control(type="text" name="userid" placeholder="아이디")
+              .valid
+          tr
+            td.title 패스워드
+            td.content
+              input.form-control(type="password" name="userpw" placeholder="패스워드")
+      .text-center
+        button.btn.btn-primary 로그인

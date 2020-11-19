@@ -1,0 +1,6 @@
+.tb-join .title{width: 20%; padding-left: 1em; font-weight: bold;}
+.tb-join .title .content{}
+.tb-join .title .content .vaild::before{content: '*'; display: inline-block;margin-right: 0.5em;}
+.tb-join .title .content .vaild{padding-top: 0.5em; color: red;display: none;}
+.tb-join .title .content .vaild.active{color: blue;}
+.tb-join .title .content input{min-width: 300px;}
