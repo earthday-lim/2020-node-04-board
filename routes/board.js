@@ -11,7 +11,13 @@ const pager = require('../modules/pager-conn');
 
 router.get(['/', '/list'], async (req, res, next) => {
 	let connect, result, pug;
-	pug = {title: '게시판 리스트', jsFile: 'board', cssFile: 'board'};
+	pug = {
+		title: '게시판 리스트', 
+		jsFile: 'board', 
+		cssFile: 'board', 
+		...pagers, 
+		user: req.session ? req.session.user : {}
+	};
 	//node 데이터 가져오기 async await가 있어야 함
 	try {
 		let temp = sqlGen('board', {

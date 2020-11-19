@@ -5,6 +5,7 @@ const app = express();
 const path = require('path');
 const createError = require('http-errors');
 const { upload } = require('./modules/multer-conn');
+const session = require('express-session'); //불러와진 건 미들웨어
 
 /* modules */
 //const { pool } = require('./modules/mysql-conn');
@@ -30,6 +31,21 @@ app.unsubscribe((req, res, next) => {
 });
 //app.use(express.json());
 app.use(express.urlencoded({extended: false}));
+/* session처리 */
+// app.use((req, res, next) => {
+//   console.log(req.session); //req.session : undefined
+//   next();
+// });
+app.use(session({ //{옵션-use안에 들어가는 거니까 req,res,next를 가진 함수가 실행됨}을 줘서 실행함
+  secret: process.env.SESSION_SALT,
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: false } //https : true, http : false 개발할 땐 false로 해도 배포할 시 반드시 true로 바꿔야 함
+}));
+// app.use((req, res, next) => {
+//   console.log(req.session); //req.session : session 성공
+//   next();
+// });
 
 /* router */
 app.use('/', express.static(path.join(__dirname, './public')));//절대경로를 줄 땐 path.join()

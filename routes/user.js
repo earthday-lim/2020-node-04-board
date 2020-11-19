@@ -4,6 +4,7 @@ const createError = require('http-errors'); //error쉽게 만들 수 있게 하�
 const bcrypt = require('bcrypt');
 const { sqlGen } = require('../modules/mysql-conn');
 const { alert } = require('../modules/util');
+const { read } = require('fs-extra');
 
 router.get('/join', () => (req, res, next) => {
   const pug = {title: '회원 가입', js: 'user-fr', css: 'user-fr'}
@@ -54,7 +55,11 @@ router.post('/logon', async (req, res, next) => {
     if(rs[0].length > 0){
       let compare = await bcrypt.compare(req.body.userpw + process.env.BCRYPT_SALT, rs[0][0].userpw);
       if(compare) { //일치한다면 회원이구나
-        //세션처리
+        //세션생성
+        req.session.user = {
+          userid: req.body.userid,
+          username: req.body.username
+        }
         res.send(alert('로그인되었습니다.', '/board'));
       }else{ //일치하지 않는다면 비회원이구나
         res.send(alert('정보가 올바르지 않습니다.', '/user/login'));
@@ -65,6 +70,11 @@ router.post('/logon', async (req, res, next) => {
   }catch(e){
     next(createError(500, e.sqlMessage || e));
   }
+});
+
+router.get('/logout', (req, res, next) => {
+  if(req.session) req.session.destroy(); //undefined가 있을 수도 있기에 if로 조건걸기
+  res.redirect('/board');
 });
 
 module.exports = router;
